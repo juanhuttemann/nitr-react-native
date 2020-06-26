@@ -1,12 +1,31 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import {
+  HeaderButtons,
+  HeaderButton,
+  Item,
+} from 'react-navigation-header-buttons';
 
 import HostsScreen from '../screens/HostsScreen';
 import HostFormScreen from '../screens/HostForm';
+import HostDetailsScreen from '../screens/HostDetails';
+
 
 const HomeStack = createStackNavigator();
 
-export default () => {
+const IoniconsHeaderButton = props => (
+  <HeaderButton
+    {...props}
+    iconSize={23}
+    color="#517fa4"
+  />
+);
+
+const ReusableSelectItem = ({onPress}) => (
+  <Item title="Edit" onPress={onPress} />
+);
+
+export default ({navigation}) => {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -17,7 +36,28 @@ export default () => {
       <HomeStack.Screen
         name="HostForm"
         component={HostFormScreen}
-        options={{tabBarLabel: 'HostForm'}}
+        options={({route}) => ({
+          title: route.params.title,
+        })}
+      />
+      <HomeStack.Screen
+        name="HostDetails"
+        component={HostDetailsScreen}
+        options={({route}) => ({
+          title: route.params.title,
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+              <ReusableSelectItem
+                onPress={() =>
+                  navigation.navigate('HostForm', {
+                    title: `Edit ${route.params.title}`,
+                    host: route.params.item,
+                  })
+                }
+              />
+            </HeaderButtons>
+          ),
+        })}
       />
     </HomeStack.Navigator>
   );

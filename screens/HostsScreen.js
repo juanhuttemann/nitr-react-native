@@ -1,5 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, StyleSheet, Alert} from 'react-native';
+import {StyleSheet, Alert} from 'react-native';
+import {
+  KeyboardAwareScrollView,
+  KeyboardAwareFlatList,
+} from 'react-native-keyboard-aware-scroll-view';
+
 import {ListItem, Icon, SearchBar} from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import Toast from 'react-native-simple-toast';
@@ -10,11 +15,30 @@ PouchDB.plugin(require('pouchdb-adapter-asyncstorage').default);
 PouchDB.plugin(require('pouchdb-find'));
 const db = new PouchDB('localDB2', {adapter: 'asyncstorage'});
 
+const setIcon = type => {
+  switch (type) {
+    case 'Server':
+      return <Icon name="server" type="material-community" color="#517fa4" />;
+    case 'PC':
+      return (
+        <Icon
+          name="desktop-tower-monitor"
+          type="material-community"
+          color="#517fa4"
+        />
+      );
+    case 'Laptop':
+      return <Icon name="computer" type="material" color="#517fa4" />;
+    default:
+      return <Icon name="server" type="material-community" color="#517fa4" />;
+  }
+};
+
 export default ({navigation}) => {
   const [hosts, setHosts] = useState([]);
   const [query, setQuery] = useState('');
 
-  const debouncedQuery = useDebounce(query, 300);
+  const debouncedQuery = useDebounce(query, 100);
 
   useEffect(() => {
     (async () => {
@@ -126,6 +150,12 @@ export default ({navigation}) => {
         key={item.name}
         title={item.name}
         subtitle={item.description}
+        onPress={() =>
+          navigation.push('HostDetails', {
+            title: item.name,
+            item,
+          })
+        }
         onLongPress={() =>
           Alert.alert(
             'Attention',
@@ -140,6 +170,7 @@ export default ({navigation}) => {
             {cancelable: false},
           )
         }
+        leftIcon={setIcon(item.type)}
         bottomDivider
         chevron
       />
@@ -151,16 +182,35 @@ export default ({navigation}) => {
       <SearchBar
         lightTheme={true}
         round={true}
-        placeholder="Search here..."
+        placeholder="Search host..."
         onChangeText={setQuery}
         value={query}
+        containerStyle={{
+          padding: 5,
+        }}
+        inputContainerStyle={{
+          backgroundColor: '#FFFFFE',
+          height: 36,
+          padding: 14,
+        }}
+        inputStyle={{
+          marginTop: 4,
+          fontSize: 16,
+          color: '#2D3436',
+          margin: 0,
+        }}
+        placeholderTextColor={{
+          color: 'black',
+        }}
       />
-      <FlatList
-        data={hosts}
-        renderItem={renderRow}
-        keyExtractor={(item, index) => index.toString()}
-        onEndReachedThreshold={0.5}
-      />
+      <KeyboardAwareScrollView enableOnAndroid={true}>
+        <KeyboardAwareFlatList
+          data={hosts}
+          renderItem={renderRow}
+          keyExtractor={(item, index) => index.toString()}
+          onEndReachedThreshold={0.5}
+        />
+      </KeyboardAwareScrollView>
       <ActionButton buttonColor="rgba(231,76,60,1)">
         <ActionButton.Item
           buttonColor="#9b59b6"

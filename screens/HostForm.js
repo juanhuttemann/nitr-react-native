@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, KeyboardAvoidingView} from 'react-native';
 import {Button} from 'react-native-elements';
 import {TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
@@ -13,7 +13,7 @@ PouchDB.plugin(require('pouchdb-adapter-asyncstorage').default);
 PouchDB.plugin(require('pouchdb-find'));
 const db = new PouchDB('localDB2', {adapter: 'asyncstorage'});
 
-import InputScrollView from 'react-native-input-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const HostSchema = Yup.object().shape({
   name: Yup.string()
@@ -25,20 +25,26 @@ const HostSchema = Yup.object().shape({
   key: Yup.string().required('Required'),
 });
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
+  const {host} = route.params;
+  console.log(host);
   const descriptionInput = useRef(null);
   return (
-    <InputScrollView>
+    <KeyboardAwareScrollView enableOnAndroid={true}>
       <Formik
-        initialValues={{
-          _id: 'host_' + uuid(),
-          name: '',
-          description: '',
-          domain: '',
-          port: '8000',
-          type: '',
-          key: '',
-        }}
+        initialValues={
+          !host
+            ? {
+                _id: 'host_' + uuid(),
+                name: '',
+                description: '',
+                domain: '',
+                port: '8000',
+                type: '',
+                key: '',
+              }
+            : host
+        }
         validationSchema={HostSchema}
         onSubmit={values => {
           db.put(values)
@@ -59,7 +65,7 @@ export default ({navigation}) => {
           touched,
           errors,
         }) => (
-          <View>
+          <>
             <TextInput
               style={styles.input}
               label="Name"
@@ -126,11 +132,15 @@ export default ({navigation}) => {
 
             <RNPickerSelect
               style={pickerSelectStyles}
-              placeholder={{
-                label: 'Host type...',
-                value: '',
-                color: '#9EA0A4',
-              }}
+              placeholder={
+                !host
+                  ? {
+                      label: 'Host type...',
+                      value: '',
+                      color: '#9EA0A4',
+                    }
+                  : {}
+              }
               onValueChange={handleChange('type')}
               items={[
                 {key: 'Server', label: 'Server', value: 'Server'},
@@ -144,10 +154,10 @@ export default ({navigation}) => {
               disabled={!isValid}
               containerStyle={styles.submit}
             />
-          </View>
+          </>
         )}
       </Formik>
-    </InputScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
