@@ -9,16 +9,12 @@ import {
 import HostsScreen from '../screens/HostsScreen';
 import HostFormScreen from '../screens/HostForm';
 import HostDetailsScreen from '../screens/HostDetails';
-
+import QRScreen from '../screens/QRScreen';
 
 const HomeStack = createStackNavigator();
 
 const IoniconsHeaderButton = props => (
-  <HeaderButton
-    {...props}
-    iconSize={23}
-    color="#517fa4"
-  />
+  <HeaderButton {...props} iconSize={23} color="#517fa4" />
 );
 
 const ReusableSelectItem = ({onPress}) => (
@@ -40,6 +36,7 @@ export default ({navigation}) => {
           title: route.params.title,
         })}
       />
+      <HomeStack.Screen name="QRScreen" component={QRScreen} />
       <HomeStack.Screen
         name="HostDetails"
         component={HostDetailsScreen}
