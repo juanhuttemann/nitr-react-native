@@ -15,7 +15,7 @@ const capitalize = str => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-const HostDetails = ({route}) => {
+const HostDetails = ({route, navigation}) => {
   const {name, description, domain, port, key, type} = route.params.item;
   const [connected, setConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -189,7 +189,7 @@ const HostDetails = ({route}) => {
 
       {connected && !isLoading && (
         <>
-          <Overview overview={overview}/>
+          <Overview overview={overview} navigation={navigation}/>
           <DetailList />
         </>
       )}

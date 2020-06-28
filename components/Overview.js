@@ -15,6 +15,9 @@ const Overview = ({navigation, overview}) => {
               : ''
           }
           subtitle="CPU usage"
+          onPress={() => {
+            navigation.push('CPUScreen', {});
+          }}
           leftIcon={<Icon name="cpu" type="feather" color="#517fa4" />}
           bottomDivider
           chevron
