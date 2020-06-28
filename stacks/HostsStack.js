@@ -10,6 +10,7 @@ import HostsScreen from '../screens/HostsScreen';
 import HostFormScreen from '../screens/HostForm';
 import HostDetailsScreen from '../screens/HostDetails';
 import QRScreen from '../screens/QRScreen';
+import CPUScreen from '../screens/CPUScreen';
 
 const HomeStack = createStackNavigator();
 
@@ -36,7 +37,13 @@ export default ({navigation}) => {
           title: route.params.title,
         })}
       />
-      <HomeStack.Screen name="QRScreen" component={QRScreen} />
+      <HomeStack.Screen
+        name="QRScreen"
+        component={QRScreen}
+        options={{
+          title: 'Add host via QR',
+        }}
+      />
       <HomeStack.Screen
         name="HostDetails"
         component={HostDetailsScreen}
@@ -55,6 +62,13 @@ export default ({navigation}) => {
             </HeaderButtons>
           ),
         })}
+      />
+      <HomeStack.Screen
+        name="CPUScreen"
+        component={CPUScreen}
+        options={{
+          title: 'CPU Information',
+        }}
       />
     </HomeStack.Navigator>
   );

@@ -1,26 +1,52 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
-import {StyleSheet, Text, TouchableOpacity, Linking, View} from 'react-native';
+import {StyleSheet, Text, View, Button} from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {RNCamera} from 'react-native-camera';
+import uuid from 'uuid-random';
 
-const QRScreen = () => {
-  const onSuccess = e => {
-    Linking.openURL(e.data).catch(err =>
-      console.error('An error occured', err),
-    );
+const QRScreen = ({navigation}) => {
+  const [scanned, setScanned] = useState(false);
+  const [reactivate, setReactivate] = useState(true);
+
+  useEffect(() => {
+    console.log(scanned);
+    if (scanned) {
+      setReactivate(false);
+    }
+  }, []);
+
+  const onSuccess = ({data}) => {
+    const host = JSON.parse(data);
+    console.log(host);
+    const hostWithId = {_id: 'host_' + uuid(), ...host};
+    navigation.navigate('HostForm', {
+      title: 'New Host',
+      host: hostWithId,
+    });
+    setScanned(true);
   };
 
   return (
     <View style={{flex: 1, backgroundColor: 'black'}}>
       <QRCodeScanner
+        reactivate={reactivate}
         onRead={onSuccess}
-        flashMode={RNCamera.Constants.FlashMode.torch}
-        bottomContent={
+        topContent={
           <Text style={styles.buttonText}>
             Scan QR code from the nitr-agent web panel
           </Text>
+        }
+        bottomContent={
+          scanned && (
+            <Button
+              title={'Tap to Scan Again'}
+              onPress={() => {
+                setScanned(false);
+                setReactivate(true);
+              }}
+            />
+          )
         }
       />
     </View>
