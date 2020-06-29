@@ -11,6 +11,7 @@ import HostFormScreen from '../screens/HostForm';
 import HostDetailsScreen from '../screens/HostDetails';
 import QRScreen from '../screens/QRScreen';
 import CPUScreen from '../screens/CPUScreen';
+import RAMScreen from '../screens/RAMScreen';
 
 const HomeStack = createStackNavigator();
 
@@ -68,6 +69,13 @@ export default ({navigation}) => {
         component={CPUScreen}
         options={{
           title: 'CPU Information',
+        }}
+      />
+      <HomeStack.Screen
+        name="RAMScreen"
+        component={RAMScreen}
+        options={{
+          title: 'RAM Information',
         }}
       />
     </HomeStack.Navigator>

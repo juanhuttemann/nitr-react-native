@@ -26,8 +26,6 @@ const HostDetails = ({route, navigation}) => {
   useEffect(() => {
     let mounted = true;
     try {
-      console.log('fetching data...');
-
       fetch(`http://${domain}:${port}/api/v1/?key=${key}`, {
         method: 'GET',
         headers: {
@@ -62,12 +60,7 @@ const HostDetails = ({route, navigation}) => {
     let retries = 0;
     let isCancelled = false;
     const interval = setInterval(() => {
-      console.log('fetching data...');
       console.log(`http://${domain}:${port}/api/v1/?key=${key}`);
-      console.log('isCancelled?');
-      console.log(isCancelled);
-      console.log('retries');
-      console.log(retries);
 
       axios({
         url: `http://${domain}:${port}/api/v1/?key=${key}`,
@@ -189,7 +182,13 @@ const HostDetails = ({route, navigation}) => {
 
       {connected && !isLoading && (
         <>
-          <Overview overview={overview} navigation={navigation}/>
+          <Overview
+            overview={overview}
+            navigation={navigation}
+            domain={domain}
+            port={port}
+            apikey={key}
+          />
           <DetailList />
         </>
       )}

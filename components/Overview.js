@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {ListItem, Icon} from 'react-native-elements';
 import {List} from 'react-native-paper';
 
-const Overview = ({navigation, overview}) => {
+const Overview = ({navigation, overview, domain, port, apikey}) => {
   return (
     <View>
       <List.Section>
@@ -16,7 +16,7 @@ const Overview = ({navigation, overview}) => {
           }
           subtitle="CPU usage"
           onPress={() => {
-            navigation.push('CPUScreen', {});
+            navigation.push('CPUScreen', {port, domain, apikey});
           }}
           leftIcon={<Icon name="cpu" type="feather" color="#517fa4" />}
           bottomDivider
@@ -33,6 +33,9 @@ const Overview = ({navigation, overview}) => {
               : ''
           }
           subtitle="Available memory"
+          onPress={() => {
+            navigation.push('RAMScreen', {port, domain, apikey});
+          }}
           leftIcon={
             <Icon name="memory" type="font-awesome-5" color="#517fa4" />
           }

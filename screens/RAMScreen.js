@@ -4,14 +4,14 @@ import axios from 'axios';
 
 export default ({route}) => {
   const {domain, port, apikey} = route.params;
-  const [cpuInfo, setCpuInfo] = useState({});
+  const [ramInfo, setRamInfo] = useState({});
 
   useEffect(() => {
     let mounted = true;
     try {
       console.log('fetching data...');
-      console.log(`http://${domain}:${port}/api/v1/cpu?key=${apikey}`);
-      fetch(`http://${domain}:${port}/api/v1/cpu?key=${apikey}`, {
+      console.log(`http://${domain}:${port}/api/v1/ram?key=${apikey}`);
+      fetch(`http://${domain}:${port}/api/v1/ram?key=${apikey}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -21,7 +21,7 @@ export default ({route}) => {
         .then(res => res.json())
         .then(res => {
           if (mounted) {
-            setCpuInfo(res);
+            setRamInfo(res);
           }
         })
         .catch(err => {
@@ -40,7 +40,7 @@ export default ({route}) => {
     let isCancelled = false;
     const interval = setInterval(() => {
       axios({
-        url: `http://${domain}:${port}/api/v1/cpu?key=${apikey}`,
+        url: `http://${domain}:${port}/api/v1/ram?key=${apikey}`,
         method: 'GET',
         timeout: 1000,
         headers: {
@@ -51,7 +51,7 @@ export default ({route}) => {
         .then(res => {
           res = res.data;
           if (!isCancelled) {
-            setCpuInfo(res);
+            setRamInfo(res);
           }
         })
         .catch(() => {
@@ -71,7 +71,7 @@ export default ({route}) => {
 
   return (
     <View>
-      <Text>{JSON.stringify(cpuInfo)}</Text>
+      <Text>{JSON.stringify(ramInfo)}</Text>
     </View>
   );
 };
