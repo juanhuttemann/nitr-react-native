@@ -1,6 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import axios from 'axios';
+import {VictoryPie} from 'victory-native';
+
+const data = [
+  {quarter: 1, earnings: 13000},
+  {quarter: 2, earnings: 16500},
+  {quarter: 3, earnings: 14250},
+  {quarter: 4, earnings: 19000},
+];
 
 export default ({route}) => {
   const {domain, port, apikey} = route.params;
@@ -69,9 +77,51 @@ export default ({route}) => {
     };
   }, []);
 
+  const colorSwitcher = {
+    fill: data => {
+      let color = 'blue';
+
+      if (data.value > 0 && data.value <= 25) {
+        color = 'red';
+      }
+
+      if (data.value > 25 && data.value <= 50) {
+        color = 'orange';
+      }
+
+      if (data.value > 50 && data.value <= 75) {
+        color = 'yellow';
+      }
+
+      if (data.value > 75 && data.value <= 100) {
+        color = 'green';
+      }
+
+      return color;
+    },
+    strokeWidth: 0,
+  };
+
   return (
     <View>
-      <Text>{JSON.stringify(ramInfo)}</Text>
+      <View style={styles.container}>
+        <VictoryPie
+          data={[
+            {x: 'Used', y: (ramInfo.usage * 100) / ramInfo.total},
+            {x: 'Free', y: (ramInfo.free * 100) / ramInfo.total},
+          ]}
+          colorScale={['orange', 'green']}
+        />
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5fcff',
+  },
+});
